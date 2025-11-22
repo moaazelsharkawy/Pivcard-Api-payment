@@ -1,0 +1,217 @@
+═══════════════════════════════════════════════════════════════════════════════
+  Pi Virtual Cards - دليل التكامل مع API للتجار (محدث)
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 نظرة عامة
+═══════════════════════════════════════════════════════════════════════════════
+هذا الملف يحتوي على جميع المتغيرات والروابط المطلوبة للتكامل مع نظام الدفع
+الإلكتروني Pi Virtual Cards. يرجى قراءة التعليمات بعناية قبل البدء.
+
+
+🔗 الروابط الأساسية (API Endpoints)
+═══════════════════════════════════════════════════════════════════════════════
+
+1️⃣ إنشاء توكن الدفع (Create Payment Token)
+   الرابط: https://wwpjeerumosievwhzxiy.supabase.co/functions/v1/create-payment-token
+   الطريقة: POST
+   الوصف: يستخدم لإنشاء توكن دفع مؤقت صالح لمدة 5 دقائق
+
+2️⃣ بدء عملية الدفع (Initiate Payment)
+   الرابط: https://wwpjeerumosievwhzxiy.supabase.co/functions/v1/merchant-payment-initiate
+   الطريقة: POST
+   الوصف: يستخدم لبدء عملية الدفع باستخدام التوكن
+
+3️⃣ إتمام عملية الدفع (Complete Payment)
+   الرابط: https://wwpjeerumosievwhzxiy.supabase.co/functions/v1/merchant-payment-complete
+   الطريقة: POST
+   الوصف: يستخدم لإتمام عملية الدفع بعد إدخال رقم PIN
+
+4️⃣ استرجاع المدفوعات (Refund Payment)
+   الرابط: https://wwpjeerumosievwhzxiy.supabase.co/functions/v1/merchant-payment-refund
+   الطريقة: POST
+   الوصف: يستخدم لاسترجاع مبلغ معاملة مكتملة
+
+
+🔑 المتغيرات المطلوبة في Headers
+═══════════════════════════════════════════════════════════════════════════════
+
+⚠️ CRITICAL: جميع الـ Headers التالية مطلوبة في كل طلب API
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ Header Name          │ القيمة / الوصف                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ Content-Type         │ application/json                                     │
+│                      │ الوصف: نوع المحتوى المرسل                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ Authorization        │ Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...       │
+│                      │ الوصف: توكن المصادقة من Supabase                    │
+│                      │ القيمة: Bearer {SUPABASE_ANON_KEY}                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ apikey               │ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...              │
+│                      │ الوصف: مفتاح API العام من Supabase                  │
+│                      │ القيمة: {SUPABASE_PUBLISHABLE_KEY}                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ x-merchant-key       │ mkey_xxxxxxxxxxxxxxxx                                │
+│                      │ الوصف: مفتاح API الخاص بالتاجر                      │
+│                      │ ⚠️ احصل عليه من لوحة التحكم الخاصة بك               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+📝 القيم الفعلية للمتغيرات
+═══════════════════════════════════════════════════════════════════════════════
+
+SUPABASE_URL:
+https://wwpjeerumosievwhzxiy.supabase.co
+
+SUPABASE_PUBLISHABLE_KEY (apikey):
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cGplZXJ1bW9zaWV2d2h6eGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0MTUyMzQsImV4cCI6MjA3ODk5MTIzNH0.YP0WjMDec_pujG1UHeZn-a6cJUpJ3fH9n1gamiKRXCo
+
+MERCHANT_API_KEY:
+⚠️ هذا المفتاح خاص بكل تاجر ويجب الحصول عليه من لوحة التحكم
+⚠️ لا تشارك هذا المفتاح مع أي شخص
+
+
+💡 أمثلة عملية (محدثة)
+═══════════════════════════════════════════════════════════════════════════════
+
+═══════════════════════════════════════════════════════════════════════════════
+مثال 1: إنشاء توكن دفع (JavaScript/Fetch)
+═══════════════════════════════════════════════════════════════════════════════
+
+fetch('https://wwpjeerumosievwhzxiy.supabase.co/functions/v1/create-payment-token', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cGplZXJ1bW9zaWV2d2h6eGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0MTUyMzQsImV4cCI6MjA3ODk5MTIzNH0.YP0WjMDec_pujG1UHeZn-a6cJUpJ3fH9n1gamiKRXCo',
+    'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cGplZXJ1bW9zaWV2d2h6eGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0MTUyMzQsImV4cCI6MjA3ODk5MTIzNH0.YP0WjMDec_pujG1UHeZn-a6cJUpJ3fH9n1gamiKRXCo',
+    'x-merchant-key': 'mkey_YOUR_MERCHANT_KEY_HERE'
+  },
+  body: JSON.stringify({
+    cardNumber: '4111111111111111',
+    cvv: '123',
+    amount: 100
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+
+
+═══════════════════════════════════════════════════════════════════════════════
+مثال 2: بدء عملية الدفع (cURL)
+═══════════════════════════════════════════════════════════════════════════════
+
+curl -X POST https://wwpjeerumosievwhzxiy.supabase.co/functions/v1/merchant-payment-initiate \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cGplZXJ1bW9zaWV2d2h6eGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0MTUyMzQsImV4cCI6MjA3ODk5MTIzNH0.YP0WjMDec_pujG1UHeZn-a6cJUpJ3fH9n1gamiKRXCo" \
+  -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cGplZXJ1bW9zaWV2d2h6eGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0MTUyMzQsImV4cCI6MjA3ODk5MTIzNH0.YP0WjMDec_pujG1UHeZn-a6cJUpJ3fH9n1gamiKRXCo" \
+  -H "x-merchant-key: mkey_YOUR_MERCHANT_KEY_HERE" \
+  -d '{
+    "paymentToken": "token_abc123xyz",
+    "amount": 100,
+    "metadata": {
+      "order_id": "ORDER-12345",
+      "customer_email": "customer@example.com"
+    }
+  }'
+
+⚠️ ملاحظة: المتغير هو paymentToken وليس token
+
+
+═══════════════════════════════════════════════════════════════════════════════
+مثال 3: إتمام الدفع (Python/Requests)
+═══════════════════════════════════════════════════════════════════════════════
+
+import requests
+
+url = "https://wwpjeerumosievwhzxiy.supabase.co/functions/v1/merchant-payment-complete"
+
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cGplZXJ1bW9zaWV2d2h6eGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0MTUyMzQsImV4cCI6MjA3ODk5MTIzNH0.YP0WjMDec_pujG1UHeZn-a6cJUpJ3fH9n1gamiKRXCo",
+    "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cGplZXJ1bW9zaWV2d2h6eGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0MTUyMzQsImV4cCI6MjA3ODk5MTIzNH0.YP0WjMDec_pujG1UHeZn-a6cJUpJ3fH9n1gamiKRXCo",
+    "x-merchant-key": "mkey_YOUR_MERCHANT_KEY_HERE"
+}
+
+data = {
+    "paymentRequestId": "payment_req_123",
+    "transactionPin": "1234"
+}
+
+response = requests.post(url, headers=headers, json=data)
+print(response.json())
+
+⚠️ ملاحظة: المتغير هو transactionPin وليس pin
+
+
+═══════════════════════════════════════════════════════════════════════════════
+مثال 4: استرجاع مدفوعات (PHP/cURL)
+═══════════════════════════════════════════════════════════════════════════════
+
+<?php
+$url = "https://wwpjeerumosievwhzxiy.supabase.co/functions/v1/merchant-payment-refund";
+
+$headers = [
+    "Content-Type: application/json",
+    "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cGplZXJ1bW9zaWV2d2h6eGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0MTUyMzQsImV4cCI6MjA3ODk5MTIzNH0.YP0WjMDec_pujG1UHeZn-a6cJUpJ3fH9n1gamiKRXCo",
+    "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cGplZXJ1bW9zaWV2d2h6eGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0MTUyMzQsImV4cCI6MjA3ODk5MTIzNH0.YP0WjMDec_pujG1UHeZn-a6cJUpJ3fH9n1gamiKRXCo",
+    "x-merchant-key: mkey_YOUR_MERCHANT_KEY_HERE"
+];
+
+$data = [
+    "transactionId" => "txn_abc123"
+];
+
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+echo $response;
+?>
+
+
+🔒 ملاحظات أمنية مهمة
+═══════════════════════════════════════════════════════════════════════════════
+
+⚠️  لا تشارك مفتاح API الخاص بالتاجر (x-merchant-key) مع أي شخص
+⚠️  لا تقم بتخزين المفاتيح في الكود المصدري (Source Code)
+⚠️  استخدم متغيرات البيئة (Environment Variables) لتخزين المفاتيح
+⚠️  قم بإجراء جميع طلبات API من الخادم (Server-Side) وليس من المتصفح
+⚠️  التوكنات صالحة لمدة 5 دقائق فقط
+⚠️  تأكد من استخدام HTTPS في جميع الطلبات
+
+
+🔄 تدفق العمل الصحيح
+═══════════════════════════════════════════════════════════════════════════════
+
+1. المستخدم يدخل معلومات البطاقة (رقم البطاقة + CVV)
+   ↓
+2. إنشاء توكن دفع مؤقت باستخدام create-payment-token
+   ↓
+3. بدء عملية الدفع باستخدام merchant-payment-initiate مع التوكن
+   ↓
+4. المستخدم يدخل رقم PIN
+   ↓
+5. إتمام الدفع باستخدام merchant-payment-complete
+   ↓
+6. تأكيد نجاح العملية
+
+
+📞 الدعم الفني
+═══════════════════════════════════════════════════════════════════════════════
+
+للحصول على مساعدة أو الإبلاغ عن مشاكل:
+- البريد الإلكتروني: support@sallanet.com
+- الوثائق الكاملة: متوفرة في لوحة التحكم
+
+
+═══════════════════════════════════════════════════════════════════════════════
+تم إنشاء هذا الملف بواسطة Pi Virtual Cards API Integration System
+آخر تحديث: 2025-01-21
+الإصدار: 1.1 (تم تصحيح متغيرات Body)
+═══════════════════════════════════════════════════════════════════════════════
