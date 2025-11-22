@@ -1,0 +1,217 @@
+═══════════════════════════════════════════════════════════════════════════════
+  Pi Virtual Cards - Merchant API Integration Guide (Updated)
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 Overview
+═══════════════════════════════════════════════════════════════════════════════
+This file contains all variables and links required to integrate with the 
+Pi Virtual Cards electronic payment system. Please read the instructions carefully before starting.
+
+
+🔗 Key Links (API Endpoints)
+═══════════════════════════════════════════════════════════════════════════════
+
+1️⃣ Create Payment Token
+   URL: https://wwpjeerumosievwhzxiy.supabase.co/functions/v1/create-payment-token
+   Method: POST
+   Description: Used to create a temporary payment token valid for 5 minutes.
+
+2️⃣ Initiate Payment
+   URL: https://wwpjeerumosievwhzxiy.supabase.co/functions/v1/merchant-payment-initiate
+   Method: POST
+   Description: Used to start the payment process using the token.
+
+3️⃣ Complete Payment
+   URL: https://wwpjeerumosievwhzxiy.supabase.co/functions/v1/merchant-payment-complete
+   Method: POST
+   Description: Used to complete the payment process after entering the PIN.
+
+4️⃣ Refund Payment
+   URL: https://wwpjeerumosievwhzxiy.supabase.co/functions/v1/merchant-payment-refund
+   Method: POST
+   Description: Used to refund a completed transaction amount.
+
+
+🔑 Required Header Variables
+═══════════════════════════════════════════════════════════════════════════════
+
+⚠️ CRITICAL: All the following Headers are required in every API request.
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ Header Name          │ Value / Description                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ Content-Type         │ application/json                                     │
+│                      │ Description: Type of content sent                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ Authorization        │ Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...       │
+│                      │ Description: Authentication token from Supabase      │
+│                      │ Value: Bearer {SUPABASE_ANON_KEY}                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ apikey               │ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...              │
+│                      │ Description: Public API Key from Supabase            │
+│                      │ Value: {SUPABASE_PUBLISHABLE_KEY}                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ x-merchant-key       │ mkey_xxxxxxxxxxxxxxxx                                │
+│                      │ Description: Merchant's Private API Key              │
+│                      │ ⚠️ Get this from your dashboard                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+📝 Actual Variable Values
+═══════════════════════════════════════════════════════════════════════════════
+
+SUPABASE_URL:
+https://wwpjeerumosievwhzxiy.supabase.co
+
+SUPABASE_PUBLISHABLE_KEY (apikey):
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cGplZXJ1bW9zaWV2d2h6eGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0MTUyMzQsImV4cCI6MjA3ODk5MTIzNH0.YP0WjMDec_pujG1UHeZn-a6cJUpJ3fH9n1gamiKRXCo
+
+MERCHANT_API_KEY:
+⚠️ This key is specific to each merchant and must be obtained from the dashboard.
+⚠️ Do not share this key with anyone.
+
+
+💡 Practical Examples (Updated)
+═══════════════════════════════════════════════════════════════════════════════
+
+═══════════════════════════════════════════════════════════════════════════════
+Example 1: Create Payment Token (JavaScript/Fetch)
+═══════════════════════════════════════════════════════════════════════════════
+
+fetch('https://wwpjeerumosievwhzxiy.supabase.co/functions/v1/create-payment-token', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cGplZXJ1bW9zaWV2d2h6eGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0MTUyMzQsImV4cCI6MjA3ODk5MTIzNH0.YP0WjMDec_pujG1UHeZn-a6cJUpJ3fH9n1gamiKRXCo',
+    'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cGplZXJ1bW9zaWV2d2h6eGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0MTUyMzQsImV4cCI6MjA3ODk5MTIzNH0.YP0WjMDec_pujG1UHeZn-a6cJUpJ3fH9n1gamiKRXCo',
+    'x-merchant-key': 'mkey_YOUR_MERCHANT_KEY_HERE'
+  },
+  body: JSON.stringify({
+    cardNumber: '4111111111111111',
+    cvv: '123',
+    amount: 100
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+
+
+═══════════════════════════════════════════════════════════════════════════════
+Example 2: Initiate Payment (cURL)
+═══════════════════════════════════════════════════════════════════════════════
+
+curl -X POST https://wwpjeerumosievwhzxiy.supabase.co/functions/v1/merchant-payment-initiate \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cGplZXJ1bW9zaWV2d2h6eGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0MTUyMzQsImV4cCI6MjA3ODk5MTIzNH0.YP0WjMDec_pujG1UHeZn-a6cJUpJ3fH9n1gamiKRXCo" \
+  -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cGplZXJ1bW9zaWV2d2h6eGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0MTUyMzQsImV4cCI6MjA3ODk5MTIzNH0.YP0WjMDec_pujG1UHeZn-a6cJUpJ3fH9n1gamiKRXCo" \
+  -H "x-merchant-key: mkey_YOUR_MERCHANT_KEY_HERE" \
+  -d '{
+    "paymentToken": "token_abc123xyz",
+    "amount": 100,
+    "metadata": {
+      "order_id": "ORDER-12345",
+      "customer_email": "customer@example.com"
+    }
+  }'
+
+⚠️ Note: The variable is `paymentToken`, not `token`.
+
+
+═══════════════════════════════════════════════════════════════════════════════
+Example 3: Complete Payment (Python/Requests)
+═══════════════════════════════════════════════════════════════════════════════
+
+import requests
+
+url = "https://wwpjeerumosievwhzxiy.supabase.co/functions/v1/merchant-payment-complete"
+
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cGplZXJ1bW9zaWV2d2h6eGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0MTUyMzQsImV4cCI6MjA3ODk5MTIzNH0.YP0WjMDec_pujG1UHeZn-a6cJUpJ3fH9n1gamiKRXCo",
+    "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cGplZXJ1bW9zaWV2d2h6eGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0MTUyMzQsImV4cCI6MjA3ODk5MTIzNH0.YP0WjMDec_pujG1UHeZn-a6cJUpJ3fH9n1gamiKRXCo",
+    "x-merchant-key": "mkey_YOUR_MERCHANT_KEY_HERE"
+}
+
+data = {
+    "paymentRequestId": "payment_req_123",
+    "transactionPin": "1234"
+}
+
+response = requests.post(url, headers=headers, json=data)
+print(response.json())
+
+⚠️ Note: The variable is `transactionPin`, not `pin`.
+
+
+═══════════════════════════════════════════════════════════════════════════════
+Example 4: Refund Payment (PHP/cURL)
+═══════════════════════════════════════════════════════════════════════════════
+
+<?php
+$url = "https://wwpjeerumosievwhzxiy.supabase.co/functions/v1/merchant-payment-refund";
+
+$headers = [
+    "Content-Type: application/json",
+    "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cGplZXJ1bW9zaWV2d2h6eGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0MTUyMzQsImV4cCI6MjA3ODk5MTIzNH0.YP0WjMDec_pujG1UHeZn-a6cJUpJ3fH9n1gamiKRXCo",
+    "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cGplZXJ1bW9zaWV2d2h6eGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0MTUyMzQsImV4cCI6MjA3ODk5MTIzNH0.YP0WjMDec_pujG1UHeZn-a6cJUpJ3fH9n1gamiKRXCo",
+    "x-merchant-key: mkey_YOUR_MERCHANT_KEY_HERE"
+];
+
+$data = [
+    "transactionId" => "txn_abc123"
+];
+
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+echo $response;
+?>
+
+
+🔒 Important Security Notes
+═══════════════════════════════════════════════════════════════════════════════
+
+⚠️  Do not share your merchant API key (x-merchant-key) with anyone.
+⚠️  Do not store keys in the source code.
+⚠️  Use Environment Variables to store keys.
+⚠️  Make all API requests from the Server-Side, not from the Browser.
+⚠️  Tokens are valid for 5 minutes only.
+⚠️  Ensure HTTPS is used in all requests.
+
+
+🔄 Correct Workflow
+═══════════════════════════════════════════════════════════════════════════════
+
+1. User enters card info (Card Number + CVV)
+   ↓
+2. Create temporary payment token using `create-payment-token`
+   ↓
+3. Initiate payment using `merchant-payment-initiate` with the token
+   ↓
+4. User enters PIN
+   ↓
+5. Complete payment using `merchant-payment-complete`
+   ↓
+6. Confirm transaction success
+
+
+📞 Technical Support
+═══════════════════════════════════════════════════════════════════════════════
+
+For assistance or to report issues:
+- Email: support@sallanet.com
+- Full Documentation: Available in the dashboard
+
+
+═══════════════════════════════════════════════════════════════════════════════
+This file was generated by Pi Virtual Cards API Integration System
+Last Update: 2025-01-21
+Version: 1.1 (Body variables corrected)
+═══════════════════════════════════════════════════════════════════════════════
